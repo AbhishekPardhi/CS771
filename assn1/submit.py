@@ -33,7 +33,10 @@ def get_renamed_labels( y ):
 	# Use whatever convention you seem fit but use the same mapping throughout your code
 	# If you use one mapping for train and another for test, you will get poor accuracy
 	
-	return y_new.reshape( ( y_new.size, ) )					# Reshape y_new as a vector
+	# replace 0 in y with -1
+	y[y==0] = -1
+	return y
+	# return y_new.reshape( ( y_new.size, ) )					# Reshape y_new as a vector
 
 
 ################################
@@ -51,7 +54,17 @@ def get_features( X ):
 	# features can be 2 dimensional, 10 dimensional, 1000 dimensional, 123456 dimensional etc
 	# Keep in mind that the more dimensions you use, the slower will be your solver too
 	# so use only as many dimensions as are absolutely required to solve the problem
-	
+
+	# let n = number of training examples.
+
+	# X is n * 8 matrix
+	X_inter = np.insert(X, 0, 1,axis = 1)			# X_inter is n*9 mat
+
+	X_inter = X_inter.T								# X_inter is 9*n mat
+
+	X_new = khatri_rao(X_inter, X_inter)			# X_new is khatri_rao product, shape = 9^2*n 
+	X_new = khatri_rao(X_new,X_inter )				# X_new.shape = 9^3*n 
+	X_new = X_new.T
 	return X_new
 
 
