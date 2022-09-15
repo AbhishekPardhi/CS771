@@ -1,2 +1,3 @@
 *.vcsode
 *.ipynb
+*.ipynb_checkpoints
