@@ -289,12 +289,51 @@ def solver( X, y, timeout, spacing ):
 
 	# You may reinitialize W, B to your liking here e.g. set W to its correct dimensionality
 	# You may also define new variables here e.g. step_length, mini-batch size etc
+	def stepLengthGenerator( mode, eta ):
+		if mode == "constant":
+			return lambda t: eta
+		elif mode == "liear":
+			return lambda t: eta/(t+1)
+		elif mode == "quadratic":
+			return lambda t: eta/np.sqrt(t+1)
+
+	theta = np.zeros(d)
+	
+	C=5.0
+	
+	
+	def getCSVMObjVal( theta ):
+		w = theta
+		hingeLoss = np.maximum( 0, 1 - y * ( np.dot( X, w ) ) )
+		return 0.5 * np.dot( w, w ) + C * np.sum( hingeLoss )
+
+	def getCSVMGrad( theta ):
+		w = theta	
+		discriminant = y * ( np.dot( X, w ) )
+		g = np.zeros( (y.size,))
+		g[discriminant < 1] = -1
+		delw = w + C * np.dot( X.T * g, y )
+		return delw
+
+	# def clean_up(cumulative, doModelAveraging, it):
+	# 	final = 0
+	# 	if doModelAveraging:
+	# 		final = cumulative/(it+1)
+	# 	else:
+	# 		final = cumulative
+	# 	theta=final
+	
+	objValSeries = []
+	timeSeries = []
+	cumulative = theta
+	
+		
 
 ################################
 # Non Editable Region Starting #
 ################################
 
-    while True:
+	while True:
 		t = t + 1
 		if t % spacing == 0:
 			toc = tm.perf_counter()
@@ -325,5 +364,13 @@ def solver( X, y, timeout, spacing ):
 		# This way, W, B will always store the averages and can be returned at any time
 		# In this scheme, W, B play the role of the "cumulative" variables in the course module optLib (see the cs771 library)
 		# W_run, B_run on the other hand, play the role of the "theta" variable in the course module optLib (see the cs771 library)
+
+		delta = getCSVMGrad( theta )
+		theta = theta - stepLengthGenerator( "linear", 1 )( t + 1 ) * delta
+		cumulative = cumulative + theta
+		objValSeries.append( getCSVMObjVal( cumulative/(t+2) ) )
+		timeSeries.append( totTime )
+
+	
 		
 	return ( W.reshape( ( W.size, ) ), B, totTime )			# This return statement will never be reached
