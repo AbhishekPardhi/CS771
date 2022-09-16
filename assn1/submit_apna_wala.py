@@ -32,6 +32,7 @@ def get_renamed_labels( y ):
 	# For example, you may map 1 -> 1 and 0 -> -1 or else you may want to go with 1 -> -1 and 0 -> 1
 	# Use whatever convention you seem fit but use the same mapping throughout your code
 	# If you use one mapping for train and another for test, you will get poor accuracy
+
 	y_new=y.copy()
 	y_new[y_new==1]=-1
 	y_new[y_new==0]=1
@@ -56,6 +57,13 @@ def get_features( X ):
 	# Keep in mind that the more dimensions you use, the slower will be your solver too
 	# so use only as many dimensions as are absolutely required to solve the problem
 	
+	X=1-2*X
+	X=X.T
+	X.append(X.shape[1]*[1])
+	X_new=khatri_rao(X,X)
+	X_new=khatri_rao(X_new,X)
+	X_new=X_new.T
+ 
 	return X_new
 
 
