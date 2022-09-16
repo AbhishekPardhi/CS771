@@ -32,8 +32,12 @@ def get_renamed_labels( y ):
 	# For example, you may map 1 -> 1 and 0 -> -1 or else you may want to go with 1 -> -1 and 0 -> 1
 	# Use whatever convention you seem fit but use the same mapping throughout your code
 	# If you use one mapping for train and another for test, you will get poor accuracy
-	
-	return y_new.reshape( ( y_new.size, ) )					# Reshape y_new as a vector
+	y_new=y.copy()
+	y_new[y_new==1]=-1
+	y_new[y_new==0]=1
+
+	return y_new
+	# return y_new.reshape( ( y_new.size, ) )					# Reshape y_new as a vector
 
 
 ################################
