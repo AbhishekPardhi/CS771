@@ -5,14 +5,6 @@ from scipy.linalg import khatri_rao
 import random as rnd
 import time as tm
 
-def stepLengthGenerator( mode, eta ):
-	if mode == "constant":
-		return lambda t: eta
-	elif mode == "linear":
-		return lambda t: eta/(t+1)
-	elif mode == "quadratic":
-		return lambda t: eta/np.sqrt(t+1)
-
 # SUBMIT YOUR CODE AS A SINGLE PYTHON (.PY) FILE INSIDE A ZIP ARCHIVE
 # THE NAME OF THE PYTHON FILE MUST BE submit.py
 # DO NOT INCLUDE PACKAGES LIKE SKLEARN, SCIPY, KERAS ETC IN YOUR CODE
@@ -78,18 +70,11 @@ def get_features( X ):
 	X_new = X_new.T
 	return X_new
 
-def stepLengthGenerator( mode, eta ):
-    if mode == "constant":
-        return lambda t: eta
-    elif mode == "liear":
-        return lambda t: eta/(t+1)
-    elif mode == "quadratic":
-        return lambda t: eta/np.sqrt(t+1)
-
 ################################
 # Non Editable Region Starting #
 ################################
-def solver( X, y, timeout, spacing ):	
+def solver( X, y, timeout, spacing ):
+	
 	# W is the model vector and will get returned once timeout happens
 	# B is the bias term that will get returned once timeout happens
 	# The bias term is optional. If you feel you do not need a bias term at all, just keep it set to 0
@@ -100,6 +85,8 @@ def solver( X, y, timeout, spacing ):
 	# returned when timeout happens. Take care to update W, B whenever you update your W_extended
 	# variable otherwise you will get wrong results.
 	# Also note that the dimensionality of W may be larger or smaller than 9
+
+
 	(n, d) = X.shape
 	t = 0
 	totTime = 0
@@ -110,31 +97,28 @@ def solver( X, y, timeout, spacing ):
 #  Non Editable Region Ending  #
 ################################
 
-    # You may reinitialize W, B to your liking here e.g. set W to its correct dimensionality
-    # You may also define new variables here e.g. step_length, mini-batch size etc
+	# You may reinitialize W, B to your liking here e.g. set W to its correct dimensionality
+	# You may also define new variables here e.g. step_length, mini-batch size etc
 	X = get_features(X)
-	C = 5.0
-    # d = X.shape[1]
-	d = X.shape[1]
-    W = np.zeros(d)
-    updater = stepLengthGenerator( "linear", 1 )
-	def getCSVMObjVal( theta ):
-		w = theta
-		hingeLoss = np.maximum( 0, 1 - y * ( np.dot( X, w ) ) )
-		return 0.5 * np.dot( w, w ) + C * np.sum( hingeLoss )
-
-	def getCSVMGrad( theta ):
-		w = theta	
-		discriminant = y * ( np.dot( X, w ) )
-		g = np.zeros( (y.size,))
-		g[discriminant < 1] = -1
-		delw = w + C * np.dot( X.T * g, y )
-		return delw
-
-	objValSeries = []
-	timeSeries = []
-	cumulative = W   
 	y = get_renamed_labels(y)
+
+	n,d = X.shape
+	W = np.zeros(d)
+	
+	# Hyper parameters
+	updater = lambda t: eta/(t+1)
+	C = 5.0
+	eta = 0.8
+
+	def grad( theta ):
+		d = y*(X@(theta.reshape(-1,1))).reshape(-1)
+
+		# gradient of loss
+		g = np.zeros((y.size))
+		g[d < 1] = -1
+		delw = theta + C * np.dot( X.T * g, y )
+		return delw
+  
 ################################
 # Non Editable Region Starting #
 ################################
@@ -171,11 +155,8 @@ def solver( X, y, timeout, spacing ):
 		# In this scheme, W, B play the role of the "cumulative" variables in the course module optLib (see the cs771 library)
 		# W_run, B_run on the other hand, play the role of the "theta" variable in the course module optLib (see the cs771 library)
 
-		delta = getCSVMGrad( W )
+		delta = grad( W )
 		W = W - updater( t + 1 ) * delta
-		cumulative = cumulative + W
-		objValSeries.append( getCSVMObjVal( cumulative/(t+2) ) )
-		timeSeries.append( totTime )
 
 	
 		
