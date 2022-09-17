@@ -1,7 +1,7 @@
 import numpy as np
-from submit import get_renamed_labels
-from submit import solver
-from submit import get_features
+from submit_apna_wala import get_renamed_labels
+from submit_apna_wala import solver
+from submit_apna_wala import get_features
 import time as tm
 
 # Find out how much hinge loss the learnt model incurred

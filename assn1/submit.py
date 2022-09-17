@@ -277,12 +277,12 @@ def solver( X, y, timeout, spacing ):
 	# Also note that the dimensionality of W may be larger or smaller than 9
 
 
-	(n, d) = X.shape
-	t = 0
-	totTime = 0
-	W = []
-	B = 0
-	tic = tm.perf_counter()
+    (n, d) = X.shape
+    t = 0
+    totTime = 0
+    W = []
+    B = 0
+    tic = tm.perf_counter()
 ################################
 #  Non Editable Region Ending  #
 ################################
@@ -293,16 +293,16 @@ def solver( X, y, timeout, spacing ):
 ################################
 # Non Editable Region Starting #
 ################################
-
+    
     while True:
-		t = t + 1
-		if t % spacing == 0:
-			toc = tm.perf_counter()
-			totTime = totTime + (toc - tic)
-			if totTime > timeout:
-				return ( W.reshape( ( W.size, ) ), B, totTime )			# Reshape W as a vector
-			else:
-				tic = tm.perf_counter()
+        t = t + 1
+        if t % spacing == 0:
+            toc = tm.perf_counter()
+            totTime = totTime + (toc - tic)
+            if totTime > timeout:
+                return ( W.reshape( ( W.size, ) ), B, totTime )			# Reshape W as a vector
+            else:
+                tic = tm.perf_counter()
 ################################
 #  Non Editable Region Ending  #
 ################################
@@ -326,4 +326,4 @@ def solver( X, y, timeout, spacing ):
 		# In this scheme, W, B play the role of the "cumulative" variables in the course module optLib (see the cs771 library)
 		# W_run, B_run on the other hand, play the role of the "theta" variable in the course module optLib (see the cs771 library)
 		
-	return ( W.reshape( ( W.size, ) ), B, totTime )			# This return statement will never be reached
+    return ( W.reshape( ( W.size, ) ), B, totTime )			# This return statement will never be reached
