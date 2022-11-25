@@ -1,2 +1,0 @@
-RHO,ALPHA,upsolon
-BETA,ALPHA,BETA,PI
