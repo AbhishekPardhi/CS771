@@ -1,4 +1,4 @@
 *.vcsode
 *__pycache__
 *.ipynb_checkpoints
-assn3/sample_submit/model.pkl
+assn3/model*
